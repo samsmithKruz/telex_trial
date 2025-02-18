@@ -20,9 +20,11 @@ define("APP", getenv('APP_NAME') ?: "App");
 define('DOMAIN', getenv("APP_URL")?:'http://localhost:5500');
 $_SESSION[APP] = $_SESSION[APP] ?? new stdClass;
 
-print_r('hi');
-exit();
 
+// Set up custom error handling and logging
+set_error_handler([Helpers::class, 'customErrorHandler']);
+set_exception_handler([Helpers::class, 'customExceptionHandler']);
+register_shutdown_function([Helpers::class, 'customShutdownFunction']);
 
 // Initialize the application
 $app = new Core;
