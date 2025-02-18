@@ -80,7 +80,10 @@ class IntegrationController extends Controller
     }
     public function webhook()
     {
-        logMessage("fila");
+        if(Helpers::isMethod("POST")){
+            $data = get_data();
+            logMessage($data);
+        }
         // $url = "https://ping.telex.im/v1/webhooks/01951a3c-6514-780b-b2e1-ab4391045e0f";
         $url = "https://ping.telex.im/v1/webhooks/01951a96-68a2-7823-8dbd-b76419fb741b";
         $data = array(

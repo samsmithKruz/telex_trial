@@ -138,3 +138,13 @@ function logMessage($message, $file = 'logs.log') {
     $timestamp = date('Y-m-d H:i:s');
     file_put_contents($logFile, "[$timestamp] $message\n", FILE_APPEND);
 }
+function get_data() {
+    // Get the raw POST data from the request body
+    $json_data = file_get_contents('php://input');
+    
+    // Decode the JSON data into a PHP associative array
+    $data = json_decode($json_data, true);
+    
+    // Return the decoded data
+    return $data;
+}
