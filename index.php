@@ -1,6 +1,4 @@
 <?php 
-print_r('hi');
-exit();
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/src/Lib/functions.php';
 use Dotenv\Dotenv;
@@ -22,6 +20,8 @@ define("APP", getenv('APP_NAME') ?: "App");
 define('DOMAIN', getenv("APP_URL")?:'http://localhost:5500');
 $_SESSION[APP] = $_SESSION[APP] ?? new stdClass;
 
+print_r('hi');
+exit();
 
 // Set up custom error handling and logging
 set_error_handler([Helpers::class, 'customErrorHandler']);
