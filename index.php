@@ -1,4 +1,6 @@
 <?php 
+print_r('hi');
+exit();
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/src/Lib/functions.php';
 use Dotenv\Dotenv;
@@ -25,8 +27,7 @@ $_SESSION[APP] = $_SESSION[APP] ?? new stdClass;
 set_error_handler([Helpers::class, 'customErrorHandler']);
 set_exception_handler([Helpers::class, 'customExceptionHandler']);
 register_shutdown_function([Helpers::class, 'customShutdownFunction']);
-print_r('hi');
-exit();
+
 // Initialize the application
 $app = new Core;
 $app->serve($_SERVER);
