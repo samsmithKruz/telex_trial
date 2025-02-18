@@ -25,7 +25,7 @@ $_SESSION[APP] = $_SESSION[APP] ?? new stdClass;
 set_error_handler([Helpers::class, 'customErrorHandler']);
 set_exception_handler([Helpers::class, 'customExceptionHandler']);
 register_shutdown_function([Helpers::class, 'customShutdownFunction']);
-
+print_r('hi');
 // Initialize the application
 $app = new Core;
 $app->serve($_SERVER);
