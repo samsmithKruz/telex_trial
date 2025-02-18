@@ -75,7 +75,8 @@ class IntegrationController extends Controller
                         "options" => ["Super-Admin", "Admin", "Manager", "Developer"]
                     ]
                 ],
-                "tick_url" => "https://space.otecfx.com/webhook"
+                "tick_url" => "https://space.otecfx.com/webhook",
+                "target_url" => "https://space.otecfx.com/output"
             ],
         ]);
     }
