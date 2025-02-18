@@ -1,0 +1,13 @@
+# Enable URL rewriting
+RewriteEngine On
+
+# Prevent direct access to certain folders
+RewriteRule ^(src)/ - [F,L]
+
+# Redirect all requests to index.php, excluding existing files and directories
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+
+# Custom error handling (optional)
+ErrorDocument 404 /index.php?url=404
