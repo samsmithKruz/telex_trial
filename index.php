@@ -20,9 +20,10 @@ define("APP", getenv('APP_NAME') ?: "App");
 define('DOMAIN', getenv("APP_URL")?:'http://localhost:5500');
 $_SESSION[APP] = $_SESSION[APP] ?? new stdClass;
 
+print_r('hi');
+exit();
+
 
 // Initialize the application
 $app = new Core;
 $app->serve($_SERVER);
-print_r('hi');
-exit();
