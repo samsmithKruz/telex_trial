@@ -104,3 +104,37 @@ function jsonResponse($data, $statusCode = 200)
     echo json_encode($data);
     exit();
 }
+function sendRequest($url, $method = 'GET', $data = [], $headers = []) {
+    $ch = curl_init();
+    
+    if (!empty($data) && $method === 'GET') {
+        $url .= '?' . http_build_query($data);
+    }
+    
+    $options = [
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CUSTOMREQUEST => strtoupper($method),
+        CURLOPT_HTTPHEADER => $headers,
+    ];
+    
+    if (!empty($data) && in_array($method, ['POST', 'PUT', 'PATCH'])) {
+        $options[CURLOPT_POSTFIELDS] = json_encode($data);
+        $options[CURLOPT_HTTPHEADER][] = 'Content-Type: application/json';
+    }
+    
+    curl_setopt_array($ch, $options);
+    
+    $response = curl_exec($ch);
+    $error = curl_error($ch);
+    
+    curl_close($ch);
+    
+    return $error ? ['error' => $error] : json_decode($response, true);
+}
+
+function logMessage($message, $file = 'logs.log') {
+    $logFile =__DIR__ . '/' . basename($file);
+    $timestamp = date('Y-m-d H:i:s');
+    file_put_contents($logFile, "[$timestamp] $message\n", FILE_APPEND);
+}
