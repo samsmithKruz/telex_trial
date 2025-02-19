@@ -104,47 +104,61 @@ function jsonResponse($data, $statusCode = 200)
     echo json_encode($data);
     exit();
 }
-function sendRequest($url, $method = 'GET', $data = [], $headers = []) {
+function sendRequest($url, $method = 'GET', $data = [], $headers = [])
+{
     $ch = curl_init();
-    
+
     if (!empty($data) && $method === 'GET') {
         $url .= '?' . http_build_query($data);
     }
-    
+
     $options = [
         CURLOPT_URL => $url,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_CUSTOMREQUEST => strtoupper($method),
         CURLOPT_HTTPHEADER => $headers,
     ];
-    
+
     if (!empty($data) && in_array($method, ['POST', 'PUT', 'PATCH'])) {
         $options[CURLOPT_POSTFIELDS] = json_encode($data);
         $options[CURLOPT_HTTPHEADER][] = 'Content-Type: application/json';
     }
-    
+
     curl_setopt_array($ch, $options);
-    
+
     $response = curl_exec($ch);
     $error = curl_error($ch);
-    
+
     curl_close($ch);
-    
+
     return $error ? ['error' => $error] : json_decode($response, true);
 }
 
-function logMessage($message, $file = 'logs.log') {
-    $logFile =__DIR__ . '/' . basename($file);
+function logMessage($message, $file = 'logs.log')
+{
+    $logFile = __DIR__ . '/' . basename($file);
     $timestamp = date('Y-m-d H:i:s');
     file_put_contents($logFile, "[$timestamp] $message\n", FILE_APPEND);
 }
-function get_data() {
+function get_data()
+{
     // Get the raw POST data from the request body
     $json_data = file_get_contents('php://input');
-    
+
     // Decode the JSON data into a PHP associative array
     $data = json_decode($json_data, true);
-    
+
     // Return the decoded data
     return $data;
+}
+function emit_event($event_name, $message, $status, $username)
+{
+    $payload = [
+        "event_name" => $event_name,
+        "message" => $message,
+        "status" => $status,
+        "username" => $username
+    ];
+
+    return sendRequest(getenv('WEBHOOK_URL') ?: "", "POST", $payload, ['content-type: application/json']);
 }
