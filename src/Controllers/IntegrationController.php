@@ -221,4 +221,14 @@ class IntegrationController extends Controller
         );
         jsonResponse($event);
     }
+    public function test_event(){
+        $event = emit_event(
+            event_name: 'Daily Order Summarizer',
+            message: "This is to test and check the emitter works fine",
+            status: 'success',
+            username: 'order-notifier'
+        );
+        jsonResponse($event);
+
+    }
 }
