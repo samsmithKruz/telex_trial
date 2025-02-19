@@ -7,6 +7,21 @@ use App\Lib\Model;
 
 class Order extends Model
 {
+    public function initTable(){
+        $this->db->query("
+        DROP TABLE IF EXISTS orders;
+
+        CREATE TABLE orders (
+            order_id INT AUTO_INCREMENT PRIMARY KEY,
+            txn_id VARCHAR(255) NOT NULL,
+            product_id INT NOT NULL,
+            description TEXT,
+            amount DECIMAL(10, 2) NOT NULL,
+            status ENUM('pending', 'completed', 'cancel') NOT NULL DEFAULT 'pending',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        );
+        ");
+    }
     public function listOrder()
     {
         $this->db->query("SELECT * FROM Orders")->resultSet();

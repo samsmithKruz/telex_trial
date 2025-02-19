@@ -2,7 +2,6 @@
 
 namespace App\Lib;
 
-use Exception;
 
 class Controller
 {
