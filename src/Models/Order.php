@@ -18,7 +18,7 @@ class Order extends Model
             description TEXT,
             amount DECIMAL(10, 2) NOT NULL,
             status ENUM('pending', 'completed', 'cancel') NOT NULL DEFAULT 'pending',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         ");
     }
