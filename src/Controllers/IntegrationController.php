@@ -121,13 +121,14 @@ class IntegrationController extends Controller
         }
         emit_event(
             event_name: "Placed Order",
-            message: "An error while trying place order for product: #" . $data['product_id'].", amount:".$data['amount'],
+            message: "An error was encountered while trying place order for product: #" . $data['product_id'].", amount:".$data['amount'],
             status: 'error',
             username: 'order-placer'
         );
         jsonResponse(['message' => 'An error occurred while placing your order'], 500);
     }
-    public function cancelOrder($order_id) {
+    public function cancelOrder($params) {
+        $order_id = @$params[0];
         if (!isset($order_id)) {
             jsonResponse([
                 'message' => "You must pass order ID to cancel Order",

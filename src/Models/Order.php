@@ -24,7 +24,7 @@ class Order extends Model
     }
     public function listOrder()
     {
-        $this->db->query("SELECT * FROM orders")->resultSet();
+        return $this->db->query("SELECT * FROM orders")->resultSet();
     }
     public function getDailyOrderSummary()
     {
@@ -35,7 +35,7 @@ class Order extends Model
         $data = (object)$data;
         $this->db->query("
         INSERT INTO orders(txn_id,product_id,description,amount,status)
-        values(:txn_id,product_id,:description,:amount,:status)
+        values(:txn_id,:product_id,:description,:amount,:status)
         ")
             ->bind(":txn_id", Helpers::safe_data($data->txn_id))
             ->bind(":product_id", Helpers::safe_data($data->product_id))
