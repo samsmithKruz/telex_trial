@@ -24,11 +24,11 @@ class Order extends Model
     }
     public function listOrder()
     {
-        $this->db->query("SELECT * FROM Orders")->resultSet();
+        $this->db->query("SELECT * FROM orders")->resultSet();
     }
     public function getDailyOrderSummary()
     {
-        $this->db->query("SELECT * FROM Orders  WHERE DATE(created_at) = CURDATE() - INTERVAL 1 DAY")->resultSet();
+        $this->db->query("SELECT * FROM orders  WHERE DATE(created_at) = CURDATE() - INTERVAL 1 DAY")->resultSet();
     }
     public function placeOrder($data)
     {

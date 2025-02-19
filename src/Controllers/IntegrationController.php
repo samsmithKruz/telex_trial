@@ -1,5 +1,7 @@
 <?php
 
+
+
 use App\Lib\Controller;
 use App\Lib\Helpers;
 
@@ -88,8 +90,9 @@ class IntegrationController extends Controller
         $orders = $this->model->listOrder();
         jsonResponse($orders);
     }
-    public function placeOrder($data)
+    public function placeOrder()
     {
+        $data = get_data();
         if (!Helpers::isMethod("POST")) {
             jsonResponse([
                 'message' => "This route requires POST method to add seed",
