@@ -28,7 +28,7 @@ class IntegrationController extends Controller
                     "updated_at" => "2025-02-18"
                 ],
                 "descriptions" => [
-                    "app_name" => "Telex Trial",
+                    "app_name" => "Order Notification",
                     "app_description" => "Sends notifications to a Telex channel whenever a new order is placed on the platform",
                     "app_logo" => "https://miro.medium.com/v2/resize:fit:1400/1*0KFB17_NGTPB0XWyc4BSgQ.jpeg",
                     "app_url" => "https://space.otecfx.com",
@@ -54,38 +54,6 @@ class IntegrationController extends Controller
                         "type" => "text",
                         "required" => true,
                         "default" => "* * * * *"
-                    ],
-                    [
-                        "label" => "Key",
-                        "type" => "text",
-                        "required" => true,
-                        "default" => "1234567890"
-                    ],
-                    [
-                        "label" => "Do you want to continue",
-                        "type" => "checkbox",
-                        "required" => true,
-                        "default" => "Yes"
-                    ],
-                    [
-                        "label" => "Provide Speed",
-                        "type" => "number",
-                        "required" => true,
-                        "default" => "1000"
-                    ],
-                    [
-                        "label" => "Sensitivity Level",
-                        "type" => "dropdown",
-                        "required" => true,
-                        "default" => "Low",
-                        "options" => ["High", "Low"]
-                    ],
-                    [
-                        "label" => "Alert Admin",
-                        "type" => "multi-checkbox",
-                        "required" => true,
-                        "default" => "Super-Admin",
-                        "options" => ["Super-Admin", "Admin", "Manager", "Developer"]
                     ]
                 ],
                 "tick_url" => "https://space.otecfx.com/integration/webhook",
@@ -239,7 +207,8 @@ class IntegrationController extends Controller
         );
         jsonResponse($event);
     }
-    public function backDateOrder($params){
+    public function backDateOrder($params)
+    {
         $order_id = @$params[0];
         if (!isset($order_id)) {
             jsonResponse([
