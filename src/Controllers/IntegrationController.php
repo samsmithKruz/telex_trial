@@ -86,7 +86,7 @@ class IntegrationController extends Controller
         $event = emit_event(
             event_name: 'Order Notification',
             message: 'Order of #w89f8 was made for $35.23',
-            status: 'failed',
+            status: 'error',
             username: 'order-notifier'
         );
         jsonResponse($event);
