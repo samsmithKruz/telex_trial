@@ -231,7 +231,6 @@ class IntegrationController extends Controller
                 'Description' => 'description',
                 'Amount' => 'amount',
                 'Status' => 'status',
-                'User ID' => 'user_id',
                 'Created At' => 'created_at'
             ]),
             status: 'success',
