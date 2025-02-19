@@ -250,7 +250,7 @@ class IntegrationController extends Controller
         if ($this->model->backDateOrder($order_id)) {
             emit_event(
                 event_name: "Backdate Order",
-                message: "An order has been backdated - order:{$order_id}",
+                message: "An order has been backdated: order:{$order_id}",
                 status: 'success',
                 username: 'order-placer'
             );
