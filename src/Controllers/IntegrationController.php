@@ -23,7 +23,7 @@ class IntegrationController extends Controller
                 ],
                 "is_active" => true,
                 "integration_type" => "interval",
-                "integration_category"=>"E-commerce & Retail",
+                "integration_category" => "E-commerce & Retail",
                 "key_features" => [
                     "Order notifier",
                     "Order Monitor"
@@ -82,19 +82,14 @@ class IntegrationController extends Controller
     }
     public function webhook()
     {
-        if(Helpers::isMethod("POST")){
-            $data = get_data();
-            logMessage($data);
-        }
-        // $url = "https://ping.telex.im/v1/webhooks/01951a3c-6514-780b-b2e1-ab4391045e0f";
-        $url = "https://ping.telex.im/v1/webhooks/01951a96-68a2-7823-8dbd-b76419fb741b";
-        $data = array(
-            "event_name" => "string",
-            "message" => "php post",
-            "status" => "success",
-            "username" => "collins"
+        $data = Helpers::isMethod("POST") ? get_data() : [];
+        logMessage($data);
+        $event = emit_event(
+            event_name: 'Order Notification',
+            message: 'Order of #w89f8 was made for $35.23',
+            status: 'failed',
+            username: 'order-notifier'
         );
-        $response = sendRequest($url, 'POST', $data);
-        jsonResponse($response);
+        jsonResponse($event);
     }
 }
