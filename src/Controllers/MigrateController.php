@@ -35,7 +35,7 @@ class MigrateController extends Controller
             'status' => 'active'
         ]);
     }
-    public function seed($table = "", $data = [])
+    public function seed($table = "")
     {
         if (!Helpers::isMethod("POST")) {
             jsonResponse([
@@ -43,6 +43,7 @@ class MigrateController extends Controller
                 'status' => 'error'
             ], 405);
         }
+        $data = get_data();
         if (empty($table) || count($data) == 0) {
             jsonResponse([
                 'message' => "This request needs a complete params for table(Orders), data([txn_id,product_id,description,amount,status,user_id])",

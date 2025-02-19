@@ -90,8 +90,9 @@ function get_data()
  * @param string $hook_url The URL of the Telex channel to send the event to.
  * @param string $status This indicates the status of event to emit 'success|error'
  */
-function emit_event($event_name, $message, $status, $username, $hook_url = getenv('WEBHOOK_URL'))
+function emit_event($event_name, $message, $status, $username, $hook_url = false)
 {
+    $hook_url = $hook_url || getenv('WEBHOOK_URL');
     $payload = [
         "event_name" => $event_name,
         "message" => $message,
