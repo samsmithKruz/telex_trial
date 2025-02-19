@@ -222,21 +222,47 @@ class IntegrationController extends Controller
     {
         $daily_orders = $this->model->getDailyOrderSummary();
         $yesterday = date('Y-m-d', strtotime('-1 day'));
+        $message = empty($daily_orders) ? "No order found for yesterder - {$yesterday}" : "The order summary for {$yesterday} is:\n" . formatOutput($daily_orders, [
+            'Order ID' => 'order_id',
+            'Transaction ID' => 'txn_id',
+            'Product ID' => 'product_id',
+            'Description' => 'description',
+            'Amount' => 'amount',
+            'Status' => 'status',
+            'Created At' => 'created_at'
+        ]);
         $event = emit_event(
             event_name: 'Daily Order Summarizer',
-            message: "The order summary for {$yesterday} is:\n" . formatOutput($daily_orders, [
-                'Order ID' => 'order_id',
-                'Transaction ID' => 'txn_id',
-                'Product ID' => 'product_id',
-                'Description' => 'description',
-                'Amount' => 'amount',
-                'Status' => 'status',
-                'Created At' => 'created_at'
-            ]),
+            message: $message,
             status: 'success',
             username: 'order-notifier'
         );
         jsonResponse($event);
+    }
+    public function backDateOrder($params){
+        $order_id = @$params[0];
+        if (!isset($order_id)) {
+            jsonResponse([
+                'message' => "You must pass order ID to process Order",
+                'status' => 'error'
+            ], 422);
+        }
+        if ($this->model->backDateOrder($order_id)) {
+            emit_event(
+                event_name: "Backdate Order",
+                message: "An order has been backdated - order:{$order_id}",
+                status: 'success',
+                username: 'order-placer'
+            );
+            jsonResponse(['message' => 'Order processed successfully'], 201);
+        }
+        emit_event(
+            event_name: "Backdate Order",
+            message: "An error while trying to backdate an order for order_id: {$order_id}",
+            status: 'error',
+            username: 'order-placer'
+        );
+        jsonResponse(['message' => 'An error occurred while processing your order'], 500);
     }
     public function test_event()
     {

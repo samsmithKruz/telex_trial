@@ -7,7 +7,8 @@ use App\Lib\Model;
 
 class Order extends Model
 {
-    public function initTable(){
+    public function initTable()
+    {
         $this->db->query("
         DROP TABLE IF EXISTS orders;
         CREATE TABLE orders (
@@ -64,5 +65,10 @@ class Order extends Model
             ->bind(":order_id", Helpers::safe_data($order_id))
             ->execute();
         return $this->db->rowCount();
+    }
+    public function backDateOrder($order_id)
+    {
+        $this->db->query("UPDATE orders SET created_at=CURDATE() - INTERVAL 1 DAY WHERE id=:id")->bind(":id", $order_id)->execute();
+        return $this->db->rowCount() ? $this->db->lastInsertId() : null;
     }
 }

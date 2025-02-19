@@ -96,4 +96,24 @@ class OrdersTest extends TestCase
         $this->assertArrayHasKey('message', $cancelResponse);
         $this->assertEquals('Order cancelled successfully', $cancelResponse['message']);
     }
+    public function testDailySummarizer(){
+        $orderData = [
+            'txn_id' => '12345',
+            'product_id' => 98765,
+            'description' => 'Test order',
+            'amount' => 100.50,
+            'user_id' => 1
+        ];
+
+        $placeOrderResponse = sendRequest("{$this->baseUrl}/integration/placeorder", 'POST', $orderData);
+        sendRequest("{$this->baseUrl}/integration/backdateorder/1", 'POST', $orderData);
+
+        $response = sendRequest("{$this->baseUrl}/integration/webhook", 'GET');
+
+        $this->assertIsArray($response);
+
+        // Assert response contains success message
+        $this->assertArrayHasKey('status', $response);
+        $this->assertEquals('success', $response['status']);
+    }
 }
