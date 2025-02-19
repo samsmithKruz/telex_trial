@@ -11,6 +11,14 @@ class IntegrationController extends Controller
     {
         $this->model('Order');
     }
+    /**
+     * Loads the integration.json specification.
+     *
+     * This function returns the integration contents.
+     * The parsed data is then used to configure the integration settings.
+     *
+     * @return array The parsed integration settings.
+     */
     public function index()
     {
         jsonResponse([
@@ -85,11 +93,16 @@ class IntegrationController extends Controller
             ],
         ]);
     }
+    /**
+     * This route returns list of orders for test purpose
+     * @return never
+     */
     public function listOrders()
     {
         $orders = $this->model->listOrder();
         jsonResponse($orders);
     }
+    
     public function placeOrder()
     {
         $data = get_data();
@@ -152,7 +165,8 @@ class IntegrationController extends Controller
         );
         jsonResponse(['message' => 'An error occurred while cancelling your order'], 500);
     }
-    public function deleteOrder($order_id) {
+    public function deleteOrder($params) {
+        $order_id = @$params[0];
         if (!isset($order_id)) {
             jsonResponse([
                 'message' => "You must pass order ID to delete Order",
@@ -176,7 +190,8 @@ class IntegrationController extends Controller
         );
         jsonResponse(['message' => 'An error occurred while deleting your order'], 500);
     }
-    public function processOrder($order_id) {
+    public function processOrder($params) {
+        $order_id = @$params[0];
         if (!isset($order_id)) {
             jsonResponse([
                 'message' => "You must pass order ID to process Order",
@@ -202,7 +217,6 @@ class IntegrationController extends Controller
     }
     public function webhook()
     {
-
         $daily_orders = $this->model->getDailyOrderSummary();
         $yesterday = date('Y-m-d', strtotime('-1 day'));
         $event = emit_event(

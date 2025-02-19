@@ -10,7 +10,6 @@ class Order extends Model
     public function initTable(){
         $this->db->query("
         DROP TABLE IF EXISTS orders;
-
         CREATE TABLE orders (
             order_id INT AUTO_INCREMENT PRIMARY KEY,
             txn_id VARCHAR(255) NOT NULL,
@@ -20,7 +19,7 @@ class Order extends Model
             status ENUM('pending', 'completed', 'cancel') NOT NULL DEFAULT 'pending',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
-        ");
+        ")->execute();
     }
     public function listOrder()
     {
@@ -28,7 +27,7 @@ class Order extends Model
     }
     public function getDailyOrderSummary()
     {
-        $this->db->query("SELECT * FROM orders  WHERE DATE(created_at) = CURDATE() - INTERVAL 1 DAY")->resultSet();
+        return $this->db->query("SELECT * FROM orders  WHERE DATE(created_at) = CURDATE() - INTERVAL 1 DAY")->resultSet();
     }
     public function placeOrder($data)
     {

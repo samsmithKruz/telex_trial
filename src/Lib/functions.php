@@ -102,8 +102,23 @@ function emit_event($event_name, $message, $status, $username, $hook_url = false
 
     return sendRequest($hook_url ?: "", "POST", $payload, ['content-type: application/json']);
 }
+/**
+ * Formats the given input string by applying the specified format options.
+ *
+ * @param string $input The input string to be formatted.
+ * @param array $options An associative array of format options. Supported options include:
+ *                       - 'uppercase' (bool): If true, converts the string to uppercase.
+ *                       - 'lowercase' (bool): If true, converts the string to lowercase.
+ *                       - 'capitalize' (bool): If true, capitalizes the first letter of each word.
+ *                       - 'trim' (bool): If true, trims whitespace from the beginning and end of the string.
+ *                       - 'prefix' (string): A string to prepend to the input string.
+ *                       - 'suffix' (string): A string to append to the input string.
+ *
+ * @return string The formatted string.
+ */
 function formatOutput($data, $headings)
 {
+    $data = (array)$data;
     $output = "";
     foreach ($data as $item) {
         foreach ($headings as $heading => $key) {
