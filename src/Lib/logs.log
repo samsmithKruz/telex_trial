@@ -17,3 +17,5 @@
 [2025-02-19 02:42:08] [WARNING] require_once(/Users/victordavid/Documents/telex_integration/src/Lib/../views/errors/404.php): Failed to open stream: No such file or directory in /Users/victordavid/Documents/telex_integration/src/Lib/Controller.php on line 28
 [2025-02-19 02:42:09] [EXCEPTION] Call to a member function prepare() on null in /Users/victordavid/Documents/telex_integration/src/Lib/Database.php on line 73
 [2025-02-19 02:42:09] [WARNING] require_once(/Users/victordavid/Documents/telex_integration/src/Lib/../views/errors/404.php): Failed to open stream: No such file or directory in /Users/victordavid/Documents/telex_integration/src/Lib/Controller.php on line 28
+[2025-02-19 09:36:11] [EXCEPTION] Call to a member function prepare() on null in /Users/victordavid/Documents/telex_integration/src/Lib/Database.php on line 73
+[2025-02-19 09:36:11] [WARNING] require_once(/Users/victordavid/Documents/telex_integration/src/Lib/../views/errors/404.php): Failed to open stream: No such file or directory in /Users/victordavid/Documents/telex_integration/src/Lib/Controller.php on line 28

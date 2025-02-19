@@ -102,7 +102,7 @@ class IntegrationController extends Controller
         $orders = $this->model->listOrder();
         jsonResponse($orders);
     }
-    
+
     public function placeOrder()
     {
         $data = get_data();
@@ -126,7 +126,7 @@ class IntegrationController extends Controller
         if ($this->model->placeOrder($data)) {
             emit_event(
                 event_name: "Placed Order",
-                message: "An order has been placed for product: #" . $data['product_id'].", amount:".$data['amount'],
+                message: "An order has been placed for product: #" . $data['product_id'] . ", amount:" . $data['amount'] . ", with a description of: " . $data['description'],
                 status: 'success',
                 username: 'order-placer'
             );
@@ -134,13 +134,14 @@ class IntegrationController extends Controller
         }
         emit_event(
             event_name: "Placed Order",
-            message: "An error was encountered while trying place order for product: #" . $data['product_id'].", amount:".$data['amount'],
+            message: "An error was encountered while trying place order for product: #" . $data['product_id'] . ", amount:" . $data['amount'],
             status: 'error',
             username: 'order-placer'
         );
         jsonResponse(['message' => 'An error occurred while placing your order'], 500);
     }
-    public function cancelOrder($params) {
+    public function cancelOrder($params)
+    {
         $order_id = @$params[0];
         if (!isset($order_id)) {
             jsonResponse([
@@ -165,7 +166,8 @@ class IntegrationController extends Controller
         );
         jsonResponse(['message' => 'An error occurred while cancelling your order'], 500);
     }
-    public function deleteOrder($params) {
+    public function deleteOrder($params)
+    {
         $order_id = @$params[0];
         if (!isset($order_id)) {
             jsonResponse([
@@ -190,7 +192,8 @@ class IntegrationController extends Controller
         );
         jsonResponse(['message' => 'An error occurred while deleting your order'], 500);
     }
-    public function processOrder($params) {
+    public function processOrder($params)
+    {
         $order_id = @$params[0];
         if (!isset($order_id)) {
             jsonResponse([
@@ -236,7 +239,8 @@ class IntegrationController extends Controller
         );
         jsonResponse($event);
     }
-    public function test_event(){
+    public function test_event()
+    {
         $event = emit_event(
             event_name: 'Daily Order Summarizer',
             message: "This is to test and check the emitter works fine",
@@ -244,6 +248,5 @@ class IntegrationController extends Controller
             username: 'order-notifier'
         );
         jsonResponse($event);
-
     }
 }

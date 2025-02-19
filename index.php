@@ -26,9 +26,9 @@ $_SESSION[APP] = $_SESSION[APP] ?? new stdClass;
 require_once __DIR__ . '/src/Lib/functions.php';
 
 // Set up custom error handling and logging
-set_error_handler([Helpers::class, 'customErrorHandler']);
-set_exception_handler([Helpers::class, 'customExceptionHandler']);
-register_shutdown_function([Helpers::class, 'customShutdownFunction']);
+// set_error_handler([Helpers::class, 'customErrorHandler']);
+// set_exception_handler([Helpers::class, 'customExceptionHandler']);
+// register_shutdown_function([Helpers::class, 'customShutdownFunction']);
 
 // Initialize the application
 $app = new Core;
