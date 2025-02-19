@@ -92,7 +92,7 @@ function get_data()
  */
 function emit_event($event_name, $message, $status, $username, $hook_url = false)
 {
-    $hook_url = $hook_url || getenv('WEBHOOK_URL');
+    $hook_url = $hook_url ? getenv('WEBHOOK_URL'):"";
     $payload = [
         "event_name" => $event_name,
         "message" => $message,
