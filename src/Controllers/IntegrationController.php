@@ -7,7 +7,7 @@ class IntegrationController extends Controller
 {
     public function index()
     {
-
+        jsonResponse([],500);
         jsonResponse([
             "data" => [
                 "date" => [
