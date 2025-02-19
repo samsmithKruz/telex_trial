@@ -5,6 +5,10 @@ use App\Lib\Helpers;
 
 class IntegrationController extends Controller
 {
+    public function __construct()
+    {
+        $this->model('Order');
+    }
     public function index()
     {
         jsonResponse([
@@ -79,14 +83,137 @@ class IntegrationController extends Controller
             ],
         ]);
     }
+    public function listOrders()
+    {
+        $orders = $this->model->listOrder();
+        jsonResponse($orders);
+    }
+    public function placeOrder($data)
+    {
+        if (!Helpers::isMethod("POST")) {
+            jsonResponse([
+                'message' => "This route requires POST method to add seed",
+                'status' => 'error'
+            ], 405);
+        }
+        if (
+            !isset($data['txn_id']) ||
+            !isset($data['product_id']) ||
+            !isset($data['description']) ||
+            !isset($data['amount']) ||
+            !isset($data['user_id'])
+        ) {
+            jsonResponse([
+                'message' => "Payload to place order must contain [txn_id,product_id,description,amount,user_id]"
+            ], 422);
+        }
+        if ($this->model->placeOrder($data)) {
+            emit_event(
+                event_name: "Placed Order",
+                message: "An order has been placed for product: #" . $data['product_id'].", amount:".$data['amount'],
+                status: 'success',
+                username: 'order-placer'
+            );
+            jsonResponse(['message' => 'Order placed successfully'], 201);
+        }
+        emit_event(
+            event_name: "Placed Order",
+            message: "An error while trying place order for product: #" . $data['product_id'].", amount:".$data['amount'],
+            status: 'error',
+            username: 'order-placer'
+        );
+        jsonResponse(['message' => 'An error occurred while placing your order'], 500);
+    }
+    public function cancelOrder($order_id) {
+        if (!isset($order_id)) {
+            jsonResponse([
+                'message' => "You must pass order ID to cancel Order",
+                'status' => 'error'
+            ], 422);
+        }
+        if ($this->model->cancelOrder($order_id)) {
+            emit_event(
+                event_name: "Canceled Order",
+                message: "An order has been canceled for order:{$order_id}",
+                status: 'success',
+                username: 'order-placer'
+            );
+            jsonResponse(['message' => 'Order cancelled successfully'], 201);
+        }
+        emit_event(
+            event_name: "Placed Order",
+            message: "An error while trying to cancel an order for order_id: {$order_id}",
+            status: 'error',
+            username: 'order-placer'
+        );
+        jsonResponse(['message' => 'An error occurred while cancelling your order'], 500);
+    }
+    public function deleteOrder($order_id) {
+        if (!isset($order_id)) {
+            jsonResponse([
+                'message' => "You must pass order ID to delete Order",
+                'status' => 'error'
+            ], 422);
+        }
+        if ($this->model->deleteOrder($order_id)) {
+            emit_event(
+                event_name: "Delete Order",
+                message: "An order has been deleted for order:{$order_id}",
+                status: 'success',
+                username: 'order-placer'
+            );
+            jsonResponse(['message' => 'Order deleted successfully'], 201);
+        }
+        emit_event(
+            event_name: "Delete Order",
+            message: "An error while trying to delete an order for order_id: {$order_id}",
+            status: 'error',
+            username: 'order-placer'
+        );
+        jsonResponse(['message' => 'An error occurred while deleting your order'], 500);
+    }
+    public function processOrder($order_id) {
+        if (!isset($order_id)) {
+            jsonResponse([
+                'message' => "You must pass order ID to process Order",
+                'status' => 'error'
+            ], 422);
+        }
+        if ($this->model->processOrder($order_id)) {
+            emit_event(
+                event_name: "Process Order",
+                message: "An order has been processed - order:{$order_id}",
+                status: 'success',
+                username: 'order-placer'
+            );
+            jsonResponse(['message' => 'Order processed successfully'], 201);
+        }
+        emit_event(
+            event_name: "Process Order",
+            message: "An error while trying to process an order for order_id: {$order_id}",
+            status: 'error',
+            username: 'order-placer'
+        );
+        jsonResponse(['message' => 'An error occurred while processing your order'], 500);
+    }
     public function webhook()
     {
-        $data = Helpers::isMethod("POST") ? get_data() : [];
-        logMessage(implode("|",$data));
+
+        $daily_orders = $this->model->getDailyOrderSummary();
+        $yesterday = date('Y-m-d', strtotime('-1 day'));
         $event = emit_event(
-            event_name: 'Order Notification',
-            message: 'Order of #w89f8 was made for $35.23',
-            status: 'error',
+            event_name: 'Daily Order Summarizer',
+            message: "The order summary for {$yesterday} is:\n" . formatOutput($daily_orders, [
+                'Order ID' => 'order_id',
+                'Transaction ID' => 'txn_id',
+                'Product ID' => 'product_id',
+                'Description' => 'description',
+                'Amount' => 'amount',
+                'Status' => 'status',
+                'User ID' => 'user_id',
+                'Created At' => 'created_at'
+            ]),
+            status: 'success',
             username: 'order-notifier'
         );
         jsonResponse($event);

@@ -1,109 +1,27 @@
 <?php
 
-if (!function_exists('assets')) {
-    function asset($path)
-    {
-        // Adjust the base URL if necessary
-        return '/public/' . ltrim($path, '/');
-    }
-}
-
-
-
-if (!function_exists('url')) {
-    /**
-     * Generate the URL for a given path relative to the base URL.
-     *
-     * @param string $path
-     * @return string
-     */
-    function url($path = '')
-    {
-        // Get the base URL from the .env or configuration file
-        $baseUrl = rtrim(getenv('APP_URL') ?: 'http://localhost', '/');
-
-        // Ensure the path starts with a single slash
-        $path = ltrim($path, '/');
-
-        // Return the concatenated base URL and path
-        return $baseUrl . '/' . $path;
-    }
-}
-
-
-function base_url($path = '')
-{
-    return 'http://' . $_SERVER['HTTP_HOST'] . '/' . ltrim($path, '/');
-}
-function current_url()
-{
-    return "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
-}
-function redirect($url)
-{
-    header('Location: ' . base_url($url));
-    exit();
-}
-function back($default = "/")
-{
-    header("location:" . ($_SERVER['HTTP_REFERER'] ?? $default));
-    exit();
-}
-function sanitize($string)
-{
-    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
-}
-function slugify($text)
-{
-    $text = preg_replace('~[^\pL\d]+~u', '-', $text);
-    $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
-    $text = preg_replace('~[^-\w]+~', '', $text);
-    return strtolower(trim($text, '-'));
-}
-function d($var)
-{
-    echo '<pre>';
-    print_r($var);
-    echo '</pre>';
-}
-function dd($var)
-{
-    echo '<pre>';
-    var_dump($var);
-    echo '</pre>';
-    exit;
-}
-function old($key, $default = null)
-{
-    return isset($_POST[$key]) ? sanitize($_POST[$key]) : $default;
-}
-function csrf_token()
-{
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-    return $_SESSION['csrf_token'];
-}
-function validate_csrf($token)
-{
-    return hash_equals($_SESSION['csrf_token'], $token);
-}
-function flashMessage($data)
-{
-    $_SESSION[APP]->flashMessage = (object)$data;
-}
-
-function access($roles)
-{
-    return in_array($_SESSION[APP]->user->role, $roles);
-}
+/**
+ * Helper function to send json response to user and also payload
+ * @param array $data
+ * @param int $statusCode
+ * @return never
+ */
 function jsonResponse($data, $statusCode = 200)
 {
     header('content-type: application/json');
     http_response_code($statusCode);
-    echo json_encode($data);
+    echo json_encode((array)$data);
     exit();
 }
+/**
+ * Helper function for sending request and 
+ * it utilizes on cUrl
+ * @param string $url
+ * @param string $method
+ * @param array $data
+ * @param array $headers
+ * @return array
+ */
 function sendRequest($url, $method = 'GET', $data = [], $headers = [])
 {
     $ch = curl_init();
@@ -134,12 +52,24 @@ function sendRequest($url, $method = 'GET', $data = [], $headers = [])
     return $error ? ['error' => $error] : json_decode($response, true);
 }
 
+/**
+ * Helper function to write to log
+ * @param string $message
+ * @param string $file
+ * @return void
+ */
 function logMessage($message, $file = 'logs.log')
 {
     $logFile = __DIR__ . '/' . basename($file);
     $timestamp = date('Y-m-d H:i:s');
     file_put_contents($logFile, "[$timestamp] $message\n", FILE_APPEND);
 }
+/**
+ * Get payload sent
+ * 
+ * @return array returns the payload as an associative array
+ */
+
 function get_data()
 {
     // Get the raw POST data from the request body
@@ -151,7 +81,16 @@ function get_data()
     // Return the decoded data
     return $data;
 }
-function emit_event($event_name, $message, $status, $username)
+/**
+ * Emit an event to a specified Telex channel.
+ *
+ * @param string $event_name The name of the event to represent the event.
+ * @param string $message The body of the message to show in Telex.
+ * @param string $username The username of the pusher to identify the event in Telex.
+ * @param string $hook_url The URL of the Telex channel to send the event to.
+ * @param string $status This indicates the status of event to emit 'success|error'
+ */
+function emit_event($event_name, $message, $status, $username, $hook_url = getenv('WEBHOOK_URL'))
 {
     $payload = [
         "event_name" => $event_name,
@@ -160,5 +99,16 @@ function emit_event($event_name, $message, $status, $username)
         "username" => $username
     ];
 
-    return sendRequest(getenv('WEBHOOK_URL') ?: "", "POST", $payload, ['content-type: application/json']);
+    return sendRequest($hook_url ?: "", "POST", $payload, ['content-type: application/json']);
+}
+function formatOutput($data, $headings)
+{
+    $output = "";
+    foreach ($data as $item) {
+        foreach ($headings as $heading => $key) {
+            $output .= "$heading: {$item[$key]}\n";
+        }
+        $output .= "-------------------------\n";
+    }
+    return $output;
 }
