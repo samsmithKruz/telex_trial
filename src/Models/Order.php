@@ -68,7 +68,7 @@ class Order extends Model
     }
     public function backDateOrder($order_id)
     {
-        $this->db->query("UPDATE orders SET created_at=CURDATE() - INTERVAL 1 DAY WHERE order_id=:id")->bind(":id", $order_id)->execute();
+        $this->db->query("UPDATE orders SET created_at=DATE_SUB(CURDATE(), INTERVAL 1 DAY) WHERE order_id=:id")->bind(":id", $order_id)->execute();
         return $this->db->rowCount()  ?: null;
     }
 }
