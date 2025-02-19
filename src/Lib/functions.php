@@ -121,6 +121,7 @@ function formatOutput($data, $headings)
     $data = (array)$data;
     $output = "";
     foreach ($data as $item) {
+        $item = (array)$item;
         foreach ($headings as $heading => $key) {
             $output .= "$heading: {$item[$key]}\n";
         }
