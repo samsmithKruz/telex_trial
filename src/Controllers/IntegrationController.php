@@ -83,7 +83,7 @@ class IntegrationController extends Controller
     public function webhook()
     {
         $data = Helpers::isMethod("POST") ? get_data() : [];
-        logMessage($data);
+        logMessage(implode("|",$data));
         $event = emit_event(
             event_name: 'Order Notification',
             message: 'Order of #w89f8 was made for $35.23',
